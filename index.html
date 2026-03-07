@@ -3,127 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HỆ THỐNG SIÊU THỊ 32 SHOP</title>
+    <title>HỆ THỐNG SIÊU THỊ 33 SHOP & DỊCH VỤ</title>
     <style>
         :root { --main-color: #fb5531; --bg-color: #f5f5f5; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; color: #333; }
-        header { 
-            background: linear-gradient(135deg, #fb5531, #ff8331); 
-            color: white; text-align: center; padding: 25px 15px; 
-            font-size: 24px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; }
+        header { background: linear-gradient(135deg, #fb5531, #ff8331); color: white; text-align: center; padding: 20px; font-size: 22px; font-weight: bold; }
         .container { max-width: 1100px; margin: auto; padding: 15px; }
-        
-        /* Lưới sản phẩm */
         .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { 
-            background: white; border-radius: 12px; overflow: hidden; 
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; 
-            display: flex; flex-direction: column; transition: 0.3s;
-        }
-        
-        .media-box { width: 100%; height: 180px; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+        .media-box { width: 100%; height: 170px; background: #000; overflow: hidden; }
         .media-box img, .media-box video { width: 100%; height: 100%; object-fit: cover; }
-
         .info { padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
-        .p-name { font-size: 13px; font-weight: 500; color: #222; margin-bottom: 5px; height: 36px; overflow: hidden; line-height: 1.4; }
-        
-        /* Sửa lỗi tràn giá */
-        .price { 
-            color: #ee4d2d; font-weight: bold; font-size: 14px; 
-            margin-bottom: 10px; min-height: 40px; display: flex; 
-            align-items: center; justify-content: center; word-break: break-word;
-        }
-        
-        .buy { display: block; color: white; padding: 10px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .back { display: inline-block; margin-bottom: 15px; padding: 8px 15px; background: #fff; color: var(--main-color); border: 1px solid var(--main-color); border-radius: 20px; cursor: pointer; }
-        
-        /* Shop Grid */
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
+        .p-name { font-size: 13px; font-weight: 500; height: 36px; overflow: hidden; margin-bottom: 5px; }
+        .price { color: #ee4d2d; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
+        .buy { display: block; color: white; padding: 10px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 10px; }
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 10px; }
         .shop-card { background: white; padding: 15px 5px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #eee; }
-        .shop-number { background: var(--main-color); color: white; width: 35px; height: 35px; line-height: 35px; border-radius: 50%; margin: 0 auto 5px; font-weight: bold; }
+        .shop-number { background: var(--main-color); color: white; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; margin: 0 auto 8px; font-weight: bold; }
+        .back { display: inline-block; margin-bottom: 15px; padding: 8px 15px; background: #fff; color: var(--main-color); border: 1px solid var(--main-color); border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-<header id="title">HỆ THỐNG SIÊU THỊ 32 SHOP</header>
+<header>HỆ THỐNG SIÊU THỊ 33 SHOP & DỊCH VỤ</header>
 <div class="container" id="content"></div>
 
 <script>
 const SHEET_ID = "1_Xwvp767BMtRnqA-9lF3ROOSbBIBk1k_QwvE2CT-h5s";
-// Đã thêm shop số 33 lấy dữ liệu từ sheet data_web (gid=518971287)
-const SHOPS = [{n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"}, {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"}, {n: "Anh Dũng", g: "87027625"}, {n: "Hải Vinh", g: "1113281647"}, {n: "Bạch Anh", g: "71371535"}, {n: "Kim Huệ", g: "1965546264"}, {n: "Tuấn Anh", g: "1073997052"}, {n: "Thế Anh", g: "849927033"}, {n: "Thị Mai", g: "298899208"}, {n: "Việt Hưng", g: "756110609"}, {n: "Thị Hồng", g: "879903903"}, {n: "Văn Hiệp", g: "1122882591"}, {n: "Thị Chi", g: "232472008"}, {n: "Tấn Bắc", g: "632628873"}, {n: "Thị Tâm", g: "1889905962"}, {n: "Văn Giữ", g: "731061721"}, {n: "Thị Bình", g: "1643784423"}, {n: "Bích Nguyệt", g: "332503970"}, {n: "Văn Tuấn", g: "1594362635"}, {n: "Yến Nhi", g: "1770126917"}, {n: "Thị Phương", g: "1795348787"}, {n: "Hoài Nam", g: "1468986790"}, {n: "Khắc Năng", g: "801738430"}, {n: "Thị Hà", g: "673532367"}, {n: "Minh Nam", g: "1798395208"}, {n: "Kim Anh", g: "2038870297"}, {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"}, {n: "Kho Tổng", g: "518971287"}];
+const SHOPS = [
+    {n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"},
+    {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"},
+    {n: "Anh Dũng", g: "87027625"}, {n: "Hải Vinh", g: "1113281647"}, {n: "Bạch Anh", g: "71371535"},
+    {n: "Kim Huệ", g: "1965546264"}, {n: "Tuấn Anh", g: "1073997052"}, {n: "Thế Anh", g: "849927033"},
+    {n: "Thị Mai", g: "298899208"}, {n: "Việt Hưng", g: "756110609"}, {n: "Thị Hồng", g: "879903903"},
+    {n: "Văn Hiệp", g: "1122882591"}, {n: "Thị Chi", g: "232472008"}, {n: "Tấn Bắc", g: "632628873"},
+    {n: "Thị Tâm", g: "1889905962"}, {n: "Văn Giữ", g: "731061721"}, {n: "Thị Bình", g: "1643784423"},
+    {n: "Bích Nguyệt", g: "332503970"}, {n: "Văn Tuấn", g: "1594362635"}, {n: "Yến Nhi", g: "1770126917"},
+    {n: "Thị Phương", g: "1795348787"}, {n: "Hoài Nam", g: "1468986790"}, {n: "Khắc Năng", g: "801738430"},
+    {n: "Thị Hà", g: "673532367"}, {n: "Minh Nam", g: "1798395208"}, {n: "Kim Anh", g: "2038870297"},
+    {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"}, 
+    {n: "DỊCH VỤ VỆ SINH", g: "518971287"} // Lấy từ sheet data_web
+];
 
-function getMedia(url) {
-    if (!url) return `<img src="https://via.placeholder.com/190?text=No+Image">`;
-    if (url.toLowerCase().match(/\.(mp4|webm|mov)$/) || url.includes('video') || url.includes('youtu.be')) {
-        // Nếu là link video youtube, chúng ta tạm hiển thị ảnh nền hoặc icon để tránh lỗi nhúng trực tiếp
-        if (url.includes('youtu.be')) return `<img src="https://img.youtube.com/vi/${url.split('/').pop()}/0.jpg">`;
-        return `<video src="${url}" autoplay loop muted playsinline></video>`;
-    }
-    return `<img src="${url}" onerror="this.src='https://via.placeholder.com/190?text=Lỗi+Ảnh'">`;
+function getBtn(url) {
+    if (url.includes('shopee.vn')) return { t: "MUA TẠI SHOPEE", c: "#ee4d2d" };
+    if (url.includes('zalo.me')) return { t: "NHẮN ZALO TƯ VẤN", c: "#0068ff" };
+    if (url.includes('facebook.com')) return { t: "LIÊN HỆ FACEBOOK", c: "#1877f2" };
+    return { t: "XEM CHI TIẾT", c: "#fb5531" };
 }
 
-function getBtnInfo(url) {
-    if (url.includes('shopee.vn')) return { text: "MUA TẠI SHOPEE", color: "#ee4d2d" };
-    if (url.includes('zalo.me')) return { text: "ĐẶT HÀNG QUA ZALO", color: "#0068ff" };
-    if (url.includes('facebook.com')) return { text: "MUA TRÊN FB", color: "#1877f2" };
-    return { text: "XEM CHI TIẾT", color: "#fb5531" };
-}
-
-async function renderProducts(name) {
+async function render(shopName) {
     const main = document.getElementById("content");
-    main.innerHTML = '<div style="text-align:center;padding:50px">Đang tải sản phẩm...</div>';
-    const shop = SHOPS.find(s => s.n == name);
-    if (!shop) return;
-
+    main.innerHTML = '<div style="text-align:center;padding:50px">Đang tải...</div>';
+    const shop = SHOPS.find(s => s.n === shopName);
     try {
         const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${shop.g}`);
-        const data = await res.text();
-        const rows = data.split("\n");
-
+        const csv = await res.text();
+        const rows = csv.split("\n").slice(1);
         let html = `<div class="back" onclick="location.href='?'">⬅ Quay lại</div><div class="products">`;
-        let count = 0;
-
-        for (let i = 1; i < rows.length; i++) {
-            let row = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            if (row.length < 3) continue;
-
-            let pName = row[0]?.replace(/"/g, "").trim();
-            let linkMedia = row[1]?.replace(/"/g, "").trim();
-            let price = row[2]?.replace(/"/g, "").trim();
-            let linkMua = row[3]?.replace(/"/g, "").trim();
-            let stock = row[4]?.replace(/"/g, "").trim();
-
-            if (pName && stock == "1") {
-                let btn = getBtnInfo(linkMua);
-                html += `
-                <div class="card">
-                    <div class="media-box">${getMedia(linkMedia)}</div>
-                    <div class="info">
-                        <div class="p-name">${pName}</div>
-                        <div class="price">${price}</div>
-                        <a class="buy" target="_blank" href="${linkMua}" style="background-color:${btn.color}">${btn.text}</a>
-                    </div>
-                </div>`;
-                count++;
+        rows.forEach(r => {
+            const col = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (col[0] && col[4]?.trim() == "1") {
+                const btn = getBtn(col[3]?.trim());
+                const img = col[1]?.includes('youtu') ? `https://img.youtube.com/vi/${col[1].split('/').pop()}/0.jpg` : col[1];
+                html += `<div class="card"><div class="media-box"><img src="${img}"></div><div class="info"><div class="p-name">${col[0]}</div><div class="price">${col[2]}</div><a class="buy" target="_blank" href="${col[3]}" style="background:${btn.c}">${btn.t}</a></div></div>`;
             }
-        }
-        main.innerHTML = count > 0 ? html + '</div>' : '<div style="text-align:center;padding:50px">Shop này đang cập nhật...</div>';
-    } catch (e) { main.innerHTML = "Lỗi kết nối Sheet!"; }
+        });
+        main.innerHTML = html + '</div>';
+    } catch (e) { main.innerHTML = "Lỗi tải dữ liệu!"; }
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const shopParam = urlParams.get('shop');
-
-if (shopParam) {
-    renderProducts(shopParam);
-} else {
-    let shopHtml = '<div class="shop-grid">';
-    SHOPS.forEach((s, i) => {
-        shopHtml += `<div class="shop-card" onclick="location.href='?shop=${encodeURIComponent(s.n)}'"><div class="shop-number">${(i+1).toString().padStart(2,'0')}</div><div>${s.n}</div></div>`;
-    });
-    document.getElementById("content").innerHTML = shopHtml + '</div>';
+const p = new URLSearchParams(window.location.search).get('shop');
+if (p) { render(p); } else {
+    let g = '<div class="shop-grid">';
+    SHOPS.forEach((s, i) => { g += `<div class="shop-card" onclick="location.href='?shop=${encodeURIComponent(s.n)}'"><div class="shop-number">${i+1}</div><div style="font-size:11px">${s.n}</div></div>`; });
+    document.getElementById("content").innerHTML = g + '</div>';
 }
 </script>
 </body>
