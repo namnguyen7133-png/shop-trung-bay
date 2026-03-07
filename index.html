@@ -15,9 +15,9 @@
         .shop-label { font-size: 12px; margin-top: 8px; color: #888; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 170px; object-fit: cover; background: #eee; }
-        .p-info { padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .p-name { font-size: 14px; font-weight: 600; height: 40px; overflow: hidden; margin-bottom: 5px; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .card img { width: 100%; height: 180px; object-fit: cover; background: #f9f9f9; }
+        .p-info { padding: 10px; text-align: center; flex-grow: 1; }
+        .p-name { font-size: 14px; font-weight: 600; height: 40px; overflow: hidden; margin-bottom: 5px; color: #222; }
         .p-price { color: #ee4d2d; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
         .btn-buy { background: #fb5531; color: white; text-decoration: none; padding: 8px; border-radius: 4px; display: block; font-size: 13px; font-weight: bold; }
         .back-btn { display: inline-block; margin-bottom: 15px; color: #fb5531; text-decoration: none; font-weight: bold; border: 1px solid #fb5531; padding: 5px 15px; border-radius: 20px; }
@@ -27,7 +27,7 @@
 
 <header>
     <h1 id="main-title">HỆ THỐNG SIÊU THỊ 32 SHOP</h1>
-    <p id="sub-title">Chọn một số cửa hàng để xem sản phẩm</p>
+    <p id="sub-title">Chọn một cửa hàng để xem sản phẩm</p>
 </header>
 
 <div class="container">
@@ -36,15 +36,15 @@
 
 <script>
 const SHEET_ID = "1_Xwvp767BMtrNqA-9IF3ROOSbBlBk1k_QwvE2CT-h5s";
-const urlParams = new URLSearchParams(window.location.search);
-const user = urlParams.get('user');
-
 const allShops = [
     "Ngân An", "Minh Châu", "Bích Ngọc", "Gia Bách", "Ngô Gialinh", "Minh Phương", "Anh Dũng", "Hải Vinh", 
     "Bạch Anh", "Kim Huệ", "Tuấn Anh", "Thế Anh", "Thị Mai", "Việt Hưng", "Thị Hồng", "Văn Hiệp", 
     "Thị Chi", "Tấn Bắc", "Thị Tâm", "Văn Giữ", "Thị Bình", "Bích Nguyệt", "Văn Tuấn", "Yến Nhi", 
     "Thị Phương", "Hoài Nam", "Khắc Năng", "Thị Hà", "Minh Nam", "Kim Anh", "Minh Hằng", "Quý Cường"
 ];
+
+const urlParams = new URLSearchParams(window.location.search);
+const user = urlParams.get('user');
 
 if (!user) {
     renderShopList();
@@ -56,11 +56,10 @@ function renderShopList() {
     let html = '<div class="shop-grid">';
     allShops.forEach((name, index) => {
         let id = (index + 1).toString().padStart(2, '0');
-        html += `
-            <a class="shop-card" href="?user=${encodeURIComponent(name)}">
-                <div class="shop-icon">${id}</div>
-                <div class="shop-label">Cửa hàng</div>
-            </a>`;
+        html += `<a class="shop-card" href="?user=${encodeURIComponent(name)}">
+                    <div class="shop-icon">${id}</div>
+                    <div class="shop-label">Cửa hàng</div>
+                 </a>`;
     });
     html += '</div>';
     document.getElementById("content").innerHTML = html;
@@ -71,35 +70,29 @@ async function renderProducts(shopName) {
     document.getElementById("sub-title").innerHTML = `<a href="index.html" class="back-btn">⬅ Quay lại danh sách shop</a>`;
     
     try {
-        // Lấy dữ liệu dạng CSV từ Google Sheets
         const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(shopName)}`);
         const data = await res.text();
-        
-        // Chia dữ liệu thành từng dòng
-        const rows = data.split("\n"); 
+        const rows = data.split("\n");
         
         let html = '<div class="product-grid">';
         let hasItem = false;
 
-        // Quét từ dòng thứ 3 (bỏ qua 2 dòng tiêu đề)
+        // Bắt đầu từ dòng 3 (index 2) để bỏ qua 2 dòng tiêu đề của bạn
         for (let i = 2; i < rows.length; i++) {
-            if (!rows[i].trim()) continue;
+            let row = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (row.length < 5) continue;
 
-            // Xử lý tách cột CSV an toàn hơn
-            const cols = rows[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-            if (!cols || cols.length < 5) continue;
+            let name = row[0].replace(/"/g, "").trim();
+            let img = row[1].replace(/"/g, "").trim();
+            let price = row[2].replace(/"/g, "").trim();
+            let link = row[3].replace(/"/g, "").trim();
+            let stock = row[4].replace(/"/g, "").trim();
 
-            let name = cols[0].replace(/"/g, "");
-            let img = cols[1].replace(/"/g, "");
-            let price = cols[2].replace(/"/g, "");
-            let link = cols[3].replace(/"/g, "");
-            let stock = cols[4].replace(/"/g, "").trim(); 
-
-            // Kiểm tra: Nếu cột E có số 1 thì mới hiện
-            if (name && (stock === "1" || stock === 1)) {
+            // Chỉ hiện nếu có tên và cột E (stock) bằng 1
+            if (name && stock == "1") {
                 html += `
                 <div class="card">
-                    <img src="${img}" onerror="this.src='https://via.placeholder.com/170?text=Sản+Phẩm'">
+                    <img src="${img}" onerror="this.src='https://via.placeholder.com/170?text=Anh-San-Pham'">
                     <div class="p-info">
                         <div class="p-name">${name}</div>
                         <div class="p-price">${price} đ</div>
@@ -111,16 +104,11 @@ async function renderProducts(shopName) {
         }
 
         html += '</div>';
-        if (!hasItem) {
-            html = `<div style='text-align:center; padding:50px;'>
-                        <h3>Cửa hàng của ${shopName} hiện chưa bật hàng.</h3>
-                        <p>Hãy kiểm tra lại cột E (số 1) trong Sheet!</p>
-                    </div>`;
-        }
+        if (!hasItem) html = `<div style="text-align:center; padding:50px;"><h3>Cửa hàng hiện chưa bật sản phẩm nào.</h3><p>Hãy chắc chắn cột E trong Sheet đã điền số 1.</p></div>`;
         document.getElementById("content").innerHTML = html;
 
     } catch (e) {
-        document.getElementById("content").innerHTML = "❌ Lỗi: Không thể kết nối dữ liệu. Vui lòng kiểm tra lại quyền chia sẻ Sheet.";
+        document.getElementById("content").innerHTML = "<p style='text-align:center;'>❌ Lỗi: Không thể tải dữ liệu.</p>";
     }
 }
 </script>
