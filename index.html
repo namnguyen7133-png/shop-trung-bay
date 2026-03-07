@@ -6,29 +6,38 @@
     <title>HỆ THỐNG SIÊU THỊ 33 SHOP & DỊCH VỤ</title>
     <style>
         :root { --main-color: #fb5531; --bg-color: #f5f5f5; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; }
-        header { background: linear-gradient(135deg, #fb5531, #ff8331); color: white; text-align: center; padding: 20px; font-size: 22px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; color: #333; }
+        header { background: linear-gradient(135deg, #fb5531, #ff8331); color: white; text-align: center; padding: 20px; font-size: 22px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .container { max-width: 1100px; margin: auto; padding: 15px; }
+        
+        /* Lưới Shop */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+        .shop-card { background: white; padding: 15px 5px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #eee; transition: 0.2s; }
+        .shop-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .shop-number { background: var(--main-color); color: white; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; margin: 0 auto 8px; font-weight: bold; }
+        
+        /* Lưới sản phẩm */
         .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
         .media-box { width: 100%; height: 170px; background: #000; overflow: hidden; }
-        .media-box img, .media-box video { width: 100%; height: 100%; object-fit: cover; }
+        .media-box img { width: 100%; height: 100%; object-fit: cover; }
         .info { padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
         .p-name { font-size: 13px; font-weight: 500; height: 36px; overflow: hidden; margin-bottom: 5px; }
         .price { color: #ee4d2d; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
         .buy { display: block; color: white; padding: 10px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 10px; }
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 10px; }
-        .shop-card { background: white; padding: 15px 5px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #eee; }
-        .shop-number { background: var(--main-color); color: white; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; margin: 0 auto 8px; font-weight: bold; }
         .back { display: inline-block; margin-bottom: 15px; padding: 8px 15px; background: #fff; color: var(--main-color); border: 1px solid var(--main-color); border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
+
 <header>HỆ THỐNG SIÊU THỊ 33 SHOP & DỊCH VỤ</header>
 <div class="container" id="content"></div>
 
 <script>
+// ID file gốc của bạn
 const SHEET_ID = "1_Xwvp767BMtRnqA-9lF3ROOSbBIBk1k_QwvE2CT-h5s";
+
+// Danh sách tự động hóa 33 Shop từ các tab sheet của bạn
 const SHOPS = [
     {n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"},
     {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"},
@@ -41,10 +50,11 @@ const SHOPS = [
     {n: "Thị Phương", g: "1795348787"}, {n: "Hoài Nam", g: "1468986790"}, {n: "Khắc Năng", g: "801738430"},
     {n: "Thị Hà", g: "673532367"}, {n: "Minh Nam", g: "1798395208"}, {n: "Kim Anh", g: "2038870297"},
     {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"}, 
-    {n: "DỊCH VỤ VỆ SINH", g: "518971287"} // Lấy từ sheet data_web
+    {n: "DỊCH VỤ VỆ SINH", g: "518971287"} // Shop 33 lấy từ data_web
 ];
 
 function getBtn(url) {
+    if (!url) return { t: "XEM CHI TIẾT", c: "#fb5531" };
     if (url.includes('shopee.vn')) return { t: "MUA TẠI SHOPEE", c: "#ee4d2d" };
     if (url.includes('zalo.me')) return { t: "NHẮN ZALO TƯ VẤN", c: "#0068ff" };
     if (url.includes('facebook.com')) return { t: "LIÊN HỆ FACEBOOK", c: "#1877f2" };
@@ -53,30 +63,49 @@ function getBtn(url) {
 
 async function render(shopName) {
     const main = document.getElementById("content");
-    main.innerHTML = '<div style="text-align:center;padding:50px">Đang tải...</div>';
+    main.innerHTML = '<div style="text-align:center;padding:50px">Đang mở cửa hàng...</div>';
     const shop = SHOPS.find(s => s.n === shopName);
     try {
         const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${shop.g}`);
         const csv = await res.text();
         const rows = csv.split("\n").slice(1);
-        let html = `<div class="back" onclick="location.href='?'">⬅ Quay lại</div><div class="products">`;
+        let html = `<div class="back" onclick="location.href='?'">⬅ Quay lại danh sách</div><div class="products">`;
+        
         rows.forEach(r => {
             const col = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            // Cột A có tên và Cột E có số 1 thì mới hiện
             if (col[0] && col[4]?.trim() == "1") {
                 const btn = getBtn(col[3]?.trim());
-                const img = col[1]?.includes('youtu') ? `https://img.youtube.com/vi/${col[1].split('/').pop()}/0.jpg` : col[1];
-                html += `<div class="card"><div class="media-box"><img src="${img}"></div><div class="info"><div class="p-name">${col[0]}</div><div class="price">${col[2]}</div><a class="buy" target="_blank" href="${col[3]}" style="background:${btn.c}">${btn.t}</a></div></div>`;
+                // Xử lý ảnh/video youtube
+                let img = col[1]?.replace(/"/g, "").trim();
+                if (img.includes('youtu')) img = `https://img.youtube.com/vi/${img.split('/').pop()}/0.jpg`;
+                
+                html += `
+                <div class="card">
+                    <div class="media-box"><img src="${img}"></div>
+                    <div class="info">
+                        <div class="p-name">${col[0]}</div>
+                        <div class="price">${col[2]}</div>
+                        <a class="buy" target="_blank" href="${col[3]}" style="background:${btn.c}">${btn.t}</a>
+                    </div>
+                </div>`;
             }
         });
         main.innerHTML = html + '</div>';
-    } catch (e) { main.innerHTML = "Lỗi tải dữ liệu!"; }
+    } catch (e) { main.innerHTML = "Lỗi kết nối dữ liệu Sheet!"; }
 }
 
-const p = new URLSearchParams(window.location.search).get('shop');
-if (p) { render(p); } else {
-    let g = '<div class="shop-grid">';
-    SHOPS.forEach((s, i) => { g += `<div class="shop-card" onclick="location.href='?shop=${encodeURIComponent(s.n)}'"><div class="shop-number">${i+1}</div><div style="font-size:11px">${s.n}</div></div>`; });
-    document.getElementById("content").innerHTML = g + '</div>';
+const urlParams = new URLSearchParams(window.location.search);
+const p = urlParams.get('shop');
+
+if (p) { 
+    render(p); 
+} else {
+    let grid = '<div class="shop-grid">';
+    SHOPS.forEach((s, i) => {
+        grid += `<div class="shop-card" onclick="location.href='?shop=${encodeURIComponent(s.n)}'"><div class="shop-number">${i+1}</div><div style="font-size:11px;font-weight:600">${s.n}</div></div>`;
+    });
+    document.getElementById("content").innerHTML = grid + '</div>';
 }
 </script>
 </body>
