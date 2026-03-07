@@ -5,35 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Shop Bảy Hằng 2026</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f4f4; }
-        header { background: #fb5531; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .container { max-width: 1000px; margin: auto; padding: 10px; }
-        /* Lưới sản phẩm - Tự co giãn cho điện thoại */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 160px; object-fit: cover; }
-        .p-info { padding: 10px; flex-grow: 1; text-align: center; }
-        .p-name { font-size: 14px; font-weight: bold; height: 40px; overflow: hidden; margin-bottom: 5px; }
-        .p-price { color: #ee4d2d; font-weight: bold; margin-bottom: 10px; }
-        .btn-buy { background: #fb5531; color: white; text-decoration: none; padding: 8px; border-radius: 4px; display: block; font-size: 14px; }
-        /* Danh sách shop */
-        .shop-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
-        .shop-btn { background: white; border: 1px solid #fb5531; color: #fb5531; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold; }
-        .shop-btn:hover { background: #fb5531; color: white; }
-        #loading { text-align: center; padding: 20px; font-weight: bold; color: #666; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f0f2f5; }
+        header { background: #fb5531; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 1100px; margin: auto; padding: 15px; }
+        /* Danh sách Shop đánh số như Shopee */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 20px; }
+        .shop-card { background: white; padding: 15px; border-radius: 12px; text-align: center; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .shop-card:hover { border-color: #fb5531; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(251, 85, 49, 0.2); }
+        .shop-icon { background: #fb5531; color: white; width: 40px; height: 40px; line-height: 40px; border-radius: 50%; margin-bottom: 10px; font-size: 14px; }
+        /* Lưới sản phẩm */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .card img { width: 100%; height: 170px; object-fit: cover; }
+        .p-info { padding: 10px; text-align: center; }
+        .p-name { font-size: 14px; font-weight: 600; height: 40px; overflow: hidden; margin-bottom: 5px; color: #222; }
+        .p-price { color: #ee4d2d; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+        .btn-buy { background: #fb5531; color: white; text-decoration: none; padding: 8px; border-radius: 4px; display: block; font-size: 13px; font-weight: bold; }
+        .back-btn { display: inline-block; margin-bottom: 15px; color: #fb5531; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1 id="shop-title">HỆ THỐNG SHOP BẢY HẰNG</h1>
-    <p id="sub-title">Đang tải gian hàng...</p>
+    <h1 id="main-title">HỆ THỐNG SIÊU THỊ 32 SHOP</h1>
+    <p id="sub-title">Chọn một cửa hàng để xem sản phẩm</p>
 </header>
 
 <div class="container">
-    <div id="main-content">
-        <div id="loading">Đang kết nối máy chủ Google Sheets...</div>
-    </div>
+    <div id="content">
+        </div>
 </div>
 
 <script>
@@ -41,37 +41,46 @@ const SHEET_ID = "1_Xwvp767BMtrNqA-9IF3ROOSbBlBk1k_QwvE2CT-h5s";
 const urlParams = new URLSearchParams(window.location.search);
 const user = urlParams.get('user');
 
-// Danh sách 32 Shop (Bạn có thể sửa tên ở đây)
-const shopNames = ["Hoài Nam", "Ngân An", "Văn Tuấn", "Anh Thư", "Minh Châu", "Thanh Tùng"]; 
+// DANH SÁCH 32 SHOP (Tên phải khớp 100% với tên Sheet của bạn)
+const allShops = [
+    "Thế Anh", "Thị Mai", "Việt Hưng", "Thị Hồng", "Văn Hiệp", "Thị Chi", "Tấn Bắc", "Thị Tâm",
+    "Văn Giữ", "Thị Bình", "Bích Nguyệt", "Văn Cương", "Hoài Nam", "Ngân An", "Minh Nam", "Kim Anh",
+    "Minh Hằng", "Quý Cường", "Thanh Tùng", "Anh Thư", "Văn Tuấn", "Minh Châu", "Thị Lan", "Văn Hùng",
+    "Thị Tuyết", "Đức Anh", "Thị Huệ", "Văn Long", "Thị Phượng", "Khắc Năng", "Thị Hà", "Quốc Bảo"
+];
 
 if (!user) {
-    showShopList();
+    renderShopList();
 } else {
-    loadProducts(user);
+    renderProducts(user);
 }
 
-function showShopList() {
-    document.getElementById("sub-title").innerText = "Vui lòng chọn một cửa hàng";
-    let html = '<div class="shop-list">';
-    // Tự động đánh số 1, 2, 3...
-    shopNames.forEach((name, index) => {
-        let shopID = (index + 1).toString().padStart(2, '0');
-        // Thêm mã ngẫu nhiên t=... để tránh trùng lặp link khi gửi Facebook
-        html += `<a class="shop-btn" href="?user=${encodeURIComponent(name)}&t=${Date.now()}">🏪 Shop ${shopID}: ${name}</a>`;
+function renderShopList() {
+    let html = '<div class="shop-grid">';
+    allShops.forEach((name, index) => {
+        let id = (index + 1).toString().padStart(2, '0');
+        // Link có thêm mã thời gian t=... để chống spam Facebook
+        html += `
+            <a class="shop-card" href="?user=${encodeURIComponent(name)}&t=${Date.now()}">
+                <div class="shop-icon">${id}</div>
+                <span>Shop ${id}: ${name}</span>
+            </a>`;
     });
     html += '</div>';
-    document.getElementById("main-content").innerHTML = html;
+    document.getElementById("content").innerHTML = html;
 }
 
-async function loadProducts(userName) {
-    document.getElementById("sub-title").innerText = "Gian hàng của: " + userName;
+async function renderProducts(shopName) {
+    document.getElementById("main-title").innerText = "GIAN HÀNG: " + shopName;
+    document.getElementById("sub-title").innerHTML = `<a href="index.html" class="back-btn">⬅ Quay lại danh sách shop</a>`;
+    
     try {
-        const response = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(userName)}`);
-        const text = await response.text();
-        const rows = text.split("\n").slice(2); // Bỏ 2 dòng tiêu đề
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(shopName)}`);
+        const data = await res.text();
+        const rows = data.split("\n").slice(2); // Bỏ 2 dòng tiêu đề English & Việt
         
-        let html = '<div class="grid">';
-        let count = 0;
+        let html = '<div class="product-grid">';
+        let hasItem = false;
 
         rows.forEach(row => {
             const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -79,28 +88,28 @@ async function loadProducts(userName) {
             let img = cols[1]?.replace(/"/g, "");
             let price = cols[2]?.replace(/"/g, "");
             let link = cols[3]?.replace(/"/g, "");
-            let stock = cols[4]?.replace(/"/g, "");
+            let stock = cols[4]?.replace(/"/g, ""); // Cột E (Bật/Tắt)
 
             if (name && stock == "1") {
                 html += `
                 <div class="card">
-                    <img src="${img}" onerror="this.src='https://via.placeholder.com/160?text=Anh-Cho-Duyet'">
+                    <img src="${img}" onerror="this.src='https://via.placeholder.com/170?text=Anh-San-Pham'">
                     <div class="p-info">
                         <div class="p-name">${name}</div>
                         <div class="p-price">${price} đ</div>
-                        <a href="${link}" class="btn-buy" target="_blank">MUA NGAY</a>
+                        <a href="${link}" class="btn-buy" target="_blank">XEM CHI TIẾT</a>
                     </div>
                 </div>`;
-                count++;
+                hasItem = true;
             }
         });
 
         html += '</div>';
-        if (count === 0) html = "<p style='text-align:center;'>Shop này hiện chưa có hàng.</p>";
-        document.getElementById("main-content").innerHTML = html;
-        
+        if (!hasItem) html = "<div style='text-align:center; padding:50px;'><h3>Tủ đồ của " + shopName + " hiện chưa có hàng.</h3><p>Vui lòng quay lại sau!</p></div>";
+        document.getElementById("content").innerHTML = html;
+
     } catch (e) {
-        document.getElementById("main-content").innerHTML = "❌ Lỗi: Không tìm thấy dữ liệu Shop.";
+        document.getElementById("content").innerHTML = "❌ Lỗi: Không thể tải dữ liệu từ Google Sheets.";
     }
 }
 </script>
