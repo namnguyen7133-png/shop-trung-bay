@@ -19,14 +19,14 @@
         /* Lưới sản phẩm */
         .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
-        .media-box { width: 100%; height: 170px; background: #000; overflow: hidden; }
+        .media-box { width: 100%; height: 170px; background: #fafafa; overflow: hidden; position: relative; }
         .media-box img { width: 100%; height: 100%; object-fit: cover; }
         .info { padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
-        .p-name { font-size: 13px; font-weight: 500; height: 36px; overflow: hidden; margin-bottom: 5px; }
+        .p-name { font-size: 13px; font-weight: 500; height: 36px; overflow: hidden; margin-bottom: 5px; line-height: 18px; }
         .price { color: #ee4d2d; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
         .buy { display: block; color: white; padding: 10px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .back { display: inline-block; margin-bottom: 15px; padding: 8px 15px; background: #fff; color: var(--main-color); border: 1px solid var(--main-color); border-radius: 20px; cursor: pointer; font-weight: bold; }
-        .shop-title { margin-bottom: 15px; font-weight: bold; color: #555; }
+        .shop-title { margin-bottom: 15px; font-weight: bold; color: #555; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -35,9 +35,9 @@
 <div class="container" id="content"></div>
 
 <script>
+// Giữ nguyên ID gốc từ trang tính của bạn
 const SHEET_ID = "1_Xwvp767BMtRnqA-9lF3ROOSbBIBk1k_QwvE2CT-h5s";
 
-// Danh sách giữ nguyên để khớp với GID của Sheet
 const SHOPS = [
     {n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"},
     {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"},
@@ -63,7 +63,7 @@ function getBtn(url) {
 
 async function render(shopIndex) {
     const main = document.getElementById("content");
-    main.innerHTML = '<div style="text-align:center;padding:50px">Đang tải dữ liệu...</div>';
+    main.innerHTML = '<div style="text-align:center;padding:50px;font-weight:500;">Đang tải dữ liệu cửa hàng...</div>';
     
     const idx = parseInt(shopIndex) - 1;
     const shop = SHOPS[idx];
@@ -74,35 +74,62 @@ async function render(shopIndex) {
     }
 
     try {
+        // Đồng bộ gọi định dạng dữ liệu cấu trúc CSV từ Google Sheets API công khai
         const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${shop.g}`);
         const csv = await res.text();
         const rows = csv.split("\n").slice(1);
         
         let html = `
-            <div class="back" onclick="location.href='?'">⬅ Quay lại</div>
-            <div class="shop-title">Cửa hàng số: ${shopIndex}</div>
+            <div class="back" onclick="location.href='?'">⬅ Quay lại trang chủ</div>
+            <div class="shop-title">Cửa hàng: ${shop.n} (Số ${shopIndex})</div>
             <div class="products">`;
         
+        let hasProduct = false;
+
         rows.forEach(r => {
+            // Tách các cột dữ liệu bằng dấu phẩy tiêu chuẩn xử lý chuỗi CSV
             const col = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            if (col[0] && col[4]?.trim() == "1") {
-                const btn = getBtn(col[3]?.trim());
-                let img = col[1]?.replace(/"/g, "").trim();
-                if (img.includes('youtu')) img = `https://img.youtube.com/vi/${img.split('/').pop()}/0.jpg`;
+            
+            if (col[0]) {
+                const stockStatus = col[4]?.replace(/"/g, "").trim();
                 
-                html += `
-                <div class="card">
-                    <div class="media-box"><img src="${img}"></div>
-                    <div class="info">
-                        <div class="p-name">${col[0].replace(/"/g, "")}</div>
-                        <div class="price">${col[2]}</div>
-                        <a class="buy" target="_blank" href="${col[3]}" style="background:${btn.c}">${btn.t}</a>
-                    </div>
-                </div>`;
+                // Đã sửa điều kiện lọc: Khớp với chữ "Còn" trên file trang tính thực tế
+                if (stockStatus === "Còn" || stockStatus === "1") {
+                    hasProduct = true;
+                    const btn = getBtn(col[3]?.trim());
+                    let img = col[1]?.replace(/"/g, "").trim();
+                    
+                    // Xử lý ảnh đại diện nếu link là video Youtube
+                    if (img.includes('youtu')) {
+                        img = `https://img.youtube.com/vi/${img.split('/').pop()}/0.jpg`;
+                    }
+                    
+                    const productName = col[0].replace(/"/g, "").trim();
+                    const productPrice = col[2]?.replace(/"/g, "").trim() || "Liên hệ";
+                    const affiliateLink = col[3]?.replace(/"/g, "").trim() || "#";
+
+                    html += `
+                    <div class="card">
+                        <div class="media-box"><img src="${img}" alt="${productName}" onerror="this.src='https://placehold.co/200x200?text=No+Image'"></div>
+                        <div class="info">
+                            <div class="p-name" title="${productName}">${productName}</div>
+                            <div class="price">${productPrice}</div>
+                            <a class="buy" target="_blank" href="${affiliateLink}" style="background:${btn.c}">${btn.t}</a>
+                        </div>
+                    </div>`;
+                }
             }
         });
+
+        if (!hasProduct) {
+            html += `<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Cửa hàng này hiện chưa có sản phẩm nào khả dụng hoặc đã hết hàng.</div>`;
+        }
+
         main.innerHTML = html + '</div>';
-    } catch (e) { main.innerHTML = "Lỗi kết nối dữ liệu!"; }
+    } catch (e) { 
+        console.error(e);
+        main.innerHTML = `<div style="text-align:center;padding:50px;color:red;">Lỗi kết nối dữ liệu! Vui lòng kiểm tra lại quyền chia sẻ liên kết trên Google Sheet.</div>`; 
+    }
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -113,7 +140,6 @@ if (shopId) {
 } else {
     let grid = '<div class="shop-grid">';
     SHOPS.forEach((s, i) => {
-        // Chỉ hiện số, không hiện tên s.n
         grid += `
         <div class="shop-card" onclick="location.href='?id=${i+1}'">
             <div class="shop-number">${i+1}</div>
