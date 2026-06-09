@@ -5,262 +5,262 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HỆ THỐNG SIÊU THỊ MUA SẮM & DỊCH VỤ</title>
     <style>
-        :root { 
-            --main-color: #fb5531; 
-            --bg-color: #f5f5f5; 
+        :root {
+            --main-color: #fb5531;
+            --bg-color: #f5f5f5;
             --success-color: #2ecc71;
         }
-        
-        body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background: var(--bg-color); 
-            margin: 0; 
-            color: #333; 
-            padding-bottom: 100px; 
+       
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            color: #333;
+            padding-bottom: 100px;
         }
-        
-        header { 
-            background: linear-gradient(135deg, #fb5531, #ff8331); 
-            color: white; 
-            text-align: center; 
-            padding: 20px; 
-            font-size: 24px; 
-            font-weight: bold; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+       
+        header {
+            background: linear-gradient(135deg, #fb5531, #ff8331);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        
-        .container { 
-            max-width: 1100px; 
-            margin: auto; 
-            padding: 20px; 
+       
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
         }
-        
-        /* Giao diện danh sách các nút Shop */
-        .shop-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); 
-            gap: 15px; 
+       
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 15px;
         }
-        
-        .shop-card { 
-            background: white; 
-            padding: 20px 10px; 
-            border-radius: 12px; 
-            text-align: center; 
-            cursor: pointer; 
-            border: 1px solid #eee; 
-            transition: all 0.2s ease; 
+       
+        .shop-card {
+            background: white;
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #eee;
+            transition: all 0.2s ease;
         }
-        
-        .shop-card:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            border-color: var(--main-color); 
+       
+        .shop-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--main-color);
         }
-        
-        .shop-number { 
-            background: var(--main-color); 
-            color: white; 
-            width: 45px; 
-            height: 45px; 
-            line-height: 45px; 
-            border-radius: 50%; 
-            margin: 0 auto; 
-            font-weight: bold; 
-            font-size: 18px; 
+       
+        .shop-number {
+            background: var(--main-color);
+            color: white;
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            border-radius: 50%;
+            margin: 0 auto;
+            font-weight: bold;
+            font-size: 18px;
         }
-        
-        /* Giao diện lưới sản phẩm */
-        .products-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 15px; 
+       
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
         }
-        
-        .product-card { 
-            background: white; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 3px 10px rgba(0,0,0,0.06); 
-            display: flex; 
-            flex-direction: column; 
-            border: 2px solid transparent; 
-            transition: all 0.2s ease; 
-            position: relative; 
+       
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
         }
-        
-        .product-card.selected { 
-            border-color: var(--success-color); 
-            background-color: #f9fff9; 
+       
+        .product-card.selected {
+            border-color: var(--success-color);
+            background-color: #f9fff9;
         }
-        
-        .select-checkbox { 
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            z-index: 10; 
-            width: 20px; 
-            height: 20px; 
-            cursor: pointer; 
+       
+        .select-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
-        
-        .image-box { 
-            width: 100%; 
-            height: 170px; 
-            background: #fafafa; 
-            overflow: hidden; 
+       
+        .image-box {
+            width: 100%;
+            height: 170px;
+            background: #fafafa;
+            overflow: hidden;
         }
-        
-        .image-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
+       
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        
-        .info-box { 
-            padding: 12px; 
-            text-align: center; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
+       
+        .info-box {
+            padding: 12px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .product-name { 
-            font-size: 13.5px; 
-            font-weight: 500; 
-            height: 38px; 
-            overflow: hidden; 
-            margin-bottom: 8px; 
-            line-height: 19px; 
+       
+        .product-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            height: 38px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            line-height: 19px;
             color: #333;
         }
-        
-        .product-price { 
-            color: #ee4d2d; 
-            font-weight: bold; 
-            font-size: 16px; 
-            margin-bottom: 12px; 
+       
+        .product-price {
+            color: #ee4d2d;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 12px;
         }
-        
-        .action-buttons { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            margin-top: auto; 
+       
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: auto;
         }
-        
-        .btn-link { 
-            display: block; 
-            color: white; 
-            padding: 8px; 
-            text-decoration: none; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            font-size: 11.5px; 
-            text-transform: uppercase; 
-            text-align: center; 
+       
+        .btn-link {
+            display: block;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            text-align: center;
         }
-        
-        .btn-select { 
-            display: block; 
-            background: #fff; 
-            color: #555; 
-            border: 1px solid #ccc; 
-            padding: 7px; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            font-size: 11.5px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
+       
+        .btn-select {
+            display: block;
+            background: #fff;
+            color: #555;
+            border: 1px solid #ccc;
+            padding: 7px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 11.5px;
+            cursor: pointer;
+            text-transform: uppercase;
         }
-        
-        .product-card.selected .btn-select { 
-            background: var(--success-color); 
-            color: white; 
-            border-color: var(--success-color); 
+       
+        .product-card.selected .btn-select {
+            background: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
         }
-
-        .btn-back { 
-            display: inline-block; 
-            margin-bottom: 15px; 
-            padding: 8px 18px; 
-            background: #fff; 
-            color: var(--main-color); 
-            border: 1px solid var(--main-color); 
-            border-radius: 20px; 
-            cursor: pointer; 
-            font-weight: bold; 
+       
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 18px;
+            background: #fff;
+            color: var(--main-color);
+            border: 1px solid var(--main-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        
-        .page-title { 
-            margin-bottom: 15px; 
-            font-weight: bold; 
-            color: #444; 
-            font-size: 19px; 
+       
+        .page-title {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #444;
+            font-size: 19px;
         }
-
-        /* Thanh toán cố định ở đáy (Cart Bar) */
-        .cart-navbar { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: white; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.12); 
-            padding: 15px 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            z-index: 1000; 
+       
+        .cart-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.12);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
         }
-        
-        .cart-status { 
-            font-size: 16px; 
-            font-weight: 500; 
+       
+        .cart-status {
+            font-size: 16px;
+            font-weight: 500;
         }
-        
-        .cart-total-price { 
-            color: #ee4d2d; 
-            font-size: 22px; 
-            font-weight: bold; 
-            margin-left: 5px; 
+       
+        .cart-total-price {
+            color: #ee4d2d;
+            font-size: 22px;
+            font-weight: bold;
+            margin-left: 5px;
         }
-        
-        .btn-checkout { 
-            background: #ee4d2d; 
-            color: white; 
-            border: none; 
-            padding: 10px 22px; 
-            font-weight: bold; 
-            border-radius: 22px; 
-            cursor: pointer; 
-            font-size: 14px; 
-            transition: 0.2s;
+       
+        .btn-checkout {
+            background: #ee4d2d;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            font-weight: bold;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 14px;
         }
-        
-        .btn-checkout:hover {
-            background: #d33b1d;
+       
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-weight: 500;
+            color: #666;
         }
     </style>
 </head>
 <body>
-
 <header>HỆ THỐNG SIÊU THỊ MUA SẮM & DỊCH VỤ</header>
 <div class="container" id="mainContent"></div>
 
 <div class="cart-navbar" id="summaryCartBar" style="display: none;">
     <div class="cart-status">
-        Đã chọn: <span id="totalItems" style="font-weight:bold; color: var(--main-color);">0</span> mặt hàng | 
+        Đã chọn: <span id="totalItems" style="font-weight:bold; color: var(--main-color);">0</span> mặt hàng |
         Tổng tính: <span class="cart-total-price" id="totalPrice">0đ</span>
     </div>
     <button class="btn-checkout" onclick="showSelectedInvoice()">Xem danh sách chọn</button>
 </div>
 
 <script>
-// CẤU HÌNH GỐC CỦA FILE SPREADSHEET
+// ==================== CẤU HÌNH ====================
 const SPREADSHEET_ID = "1_Xwvp767BMtRnqA-9lF3ROOSbBIBk1k_QwvE2CT-h5s";
 
-// DANH SÁCH SHOP: Sau này muốn thêm/bớt người, bạn chỉ việc quản lý tại đây.
+// Sử dụng CORS Proxy đáng tin cậy hơn
+const CORS_PROXY = "https://corsproxy.io/?";
+
 const SHOPS = [
     {n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"},
     {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"},
@@ -272,13 +272,13 @@ const SHOPS = [
     {n: "Bích Nguyệt", g: "332503970"}, {n: "Văn Tuấn", g: "1594362635"}, {n: "Yến Nhi", g: "1770126917"},
     {n: "Thị Phương", g: "1795348787"}, {n: "Hoài Nam", g: "1468986790"}, {n: "Khắc Năng", g: "801738430"},
     {n: "Thị Hà", g: "673532367"}, {n: "Minh Nam", g: "1798395208"}, {n: "Kim Anh", g: "2038870297"},
-    {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"}, 
+    {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"},
     {n: "DỊCH VỤ VỆ SINH", g: "518971287"}
 ];
 
-let cartList = []; 
+let cartList = [];
 
-// Hàm nhận diện thương hiệu link để đổi màu/đổi chữ nút bấm
+// ==================== HÀM HỖ TRỢ ====================
 function generateButtonStyle(url) {
     if (!url) return { text: "XEM CHI TIẾT", color: "#fb5531" };
     const link = url.toLowerCase();
@@ -288,16 +288,13 @@ function generateButtonStyle(url) {
     return { text: "XEM CHI TIẾT", color: "#fb5531" };
 }
 
-// Bộ chuyển đổi giá chuỗi (20.000, 20,0k, 20k) thành số nguyên để tính toán toán học
 function parseCurrencyToNumber(priceStr) {
     if (!priceStr) return 0;
     let text = priceStr.toLowerCase().replace(/"/g, "").trim();
-    
     if (text.includes('k')) {
         let val = parseFloat(text.replace('k', '').replace(',', '.'));
-        return isNaN(val) ? 0 : val * 1000;
+        return isNaN(val) ? 0 : Math.round(val * 1000);
     }
-    
     let rawNum = parseInt(text.replace(/[^0-9]/g, ""), 10);
     return isNaN(rawNum) ? 0 : rawNum;
 }
@@ -306,29 +303,29 @@ function formatCurrencyVN(number) {
     return number.toLocaleString('vi-VN') + 'đ';
 }
 
-// HÀM HIỂN THỊ CHI TIẾT SẢN PHẨM CỦA MỖI SHOP
+// ==================== LẤY DỮ LIỆU TỪ GOOGLE SHEETS ====================
 async function renderShopProducts(shopIndex) {
     const mainView = document.getElementById("mainContent");
-    mainView.innerHTML = '<div style="text-align:center;padding:50px;font-weight:500;">Đang kết nối kho hàng trực tuyến...</div>';
+    mainView.innerHTML = '<div class="loading">Đang tải dữ liệu cửa hàng...</div>';
     document.getElementById("summaryCartBar").style.display = "none";
-    cartList = []; // Xóa bộ nhớ giỏ hàng cũ khi đổi shop
-    
+    cartList = [];
+
     const index = parseInt(shopIndex) - 1;
     const currentShop = SHOPS[index];
-    
-    if(!currentShop) {
-        location.href = '?';
-        return;
-    }
+    if (!currentShop) return;
 
     try {
-        const fetchUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${currentShop.g}`;
+        const baseUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${currentShop.g}`;
+        const fetchUrl = CORS_PROXY + encodeURIComponent(baseUrl);
+
         const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error("Không thể kết nối");
+
         const csvData = await response.text();
         const dataRows = csvData.split(/\r?\n/);
-        
+
         if (dataRows.length <= 1) {
-            mainView.innerHTML = `<div style="text-align:center;padding:50px;">Cửa hàng tạm thời chưa cập nhật sản phẩm.</div>`;
+            mainView.innerHTML = `<div style="text-align:center;padding:50px;">Cửa hàng tạm thời chưa có sản phẩm.</div>`;
             return;
         }
 
@@ -336,24 +333,21 @@ async function renderShopProducts(shopIndex) {
             <div class="btn-back" onclick="location.href='?'">⬅ Quay lại trang chủ</div>
             <div class="page-title">Cửa hàng: ${currentShop.n} (Số ${shopIndex})</div>
             <div class="products-grid">`;
-        
+
         let validProductCount = 0;
 
         for (let i = 1; i < dataRows.length; i++) {
-            let rowText = dataRows[i];
-            if (!rowText.trim()) continue;
-            
-            // Cắt chuỗi CSV bằng Regex chuẩn hóa quốc tế chống tràn ô
+            let rowText = dataRows[i].trim();
+            if (!rowText) continue;
+
             const columns = rowText.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            // ĐỌC CHUẨN ĐỊNH VỊ THEO THỰC TẾ DỮ LIỆU
-            const productName = columns[3]?.replace(/"/g, "").trim();      // Cột [3]: Tên sản phẩm
-            const productPriceText = columns[2]?.replace(/"/g, "").trim();  // Cột [2]: Giá gốc text
-            let imageUrl = columns[10]?.replace(/"/g, "").trim() || "";     // Cột [10]: Link ảnh 
-            const linkUuDai = columns[8]?.replace(/"/g, "").trim() || "#";  // Cột [8]: Link ưu đãi bán hàng
-            const stockStatus = columns[4]?.replace(/"/g, "").trim();      // Cột [4]: Tình trạng Còn/Hết
+            const productName = columns[3]?.replace(/"/g, "").trim();
+            const productPriceText = columns[2]?.replace(/"/g, "").trim();
+            let imageUrl = columns[10]?.replace(/"/g, "").trim() || "";
+            const linkUuDai = columns[8]?.replace(/"/g, "").trim() || "#";
+            const stockStatus = columns[4]?.replace(/"/g, "").trim();
 
-            // Lọc điều kiện: Tồn tại tên và Trạng thái kho ghi chữ "Còn" hoặc số "1"
             if (productName && (stockStatus === "Còn" || stockStatus === "1")) {
                 const buttonConfig = generateButtonStyle(linkUuDai);
                 const numericPrice = parseCurrencyToNumber(productPriceText);
@@ -382,20 +376,29 @@ async function renderShopProducts(shopIndex) {
         }
 
         if (validProductCount === 0) {
-            htmlGrid += `<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Hiện tại toàn bộ mặt hàng trong Shop đã hết.</div>`;
+            htmlGrid += `<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Hiện tại toàn bộ mặt hàng đã hết.</div>`;
         } else {
             document.getElementById("summaryCartBar").style.display = "flex";
             refreshCartUI();
         }
 
         mainView.innerHTML = htmlGrid + '</div>';
-    } catch (error) { 
+
+    } catch (error) {
         console.error(error);
-        mainView.innerHTML = `<div style="text-align:center;padding:50px;color:red;font-weight:bold;">Không thể tải dữ liệu. Lỗi phân tích cấu trúc Google Sheets!</div>`; 
+        mainView.innerHTML = `
+            <div style="text-align:center;padding:50px;color:red;">
+                <h3>❌ Không thể tải dữ liệu</h3>
+                <p>Vui lòng kiểm tra:</p>
+                <ul style="text-align:left;display:inline-block;">
+                    <li>Google Sheet đã được đặt **Công khai** (Anyone with the link)</li>
+                    <li>ID Sheet và GID có đúng không</li>
+                </ul>
+            </div>`;
     }
 }
 
-// XỬ LÝ SỰ KIỆN TÍCH CHỌN SẢN PHẨM TRÊN GIAO DIỆN
+// Các hàm còn lại giữ nguyên
 function onSelectProductChange(id, name, price, element) {
     const targetCard = document.getElementById(`prod-card-${id}`);
     if (element.checked) {
@@ -408,14 +411,12 @@ function onSelectProductChange(id, name, price, element) {
     refreshCartUI();
 }
 
-// CẬP NHẬT THANH TỔNG TIỀN DƯỚI ĐÁY TRỰC TUYẾN
 function refreshCartUI() {
     const totalAmount = cartList.reduce((acc, item) => acc + item.price, 0);
     document.getElementById("totalItems").innerText = cartList.length;
     document.getElementById("totalPrice").innerText = formatCurrencyVN(totalAmount);
 }
 
-// XUẤT HÓA ĐƠN ĐẶT HÀNG CHO KHÁCH HÀNG
 function showSelectedInvoice() {
     if (cartList.length === 0) {
         alert("Vui lòng tích chọn mặt hàng muốn tính tiền!");
@@ -430,12 +431,12 @@ function showSelectedInvoice() {
     alert(invoiceText);
 }
 
-// BỘ ĐIỀU HƯỚNG ROUTING TRANG CHỦ HOẶC TRANG CON
+// Routing
 const urlParams = new URLSearchParams(window.location.search);
 const currentShopId = urlParams.get('id');
 
-if (currentShopId) { 
-    renderShopProducts(currentShopId); 
+if (currentShopId) {
+    renderShopProducts(currentShopId);
 } else {
     let gridLayout = '<div class="shop-grid">';
     SHOPS.forEach((shop, i) => {
