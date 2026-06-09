@@ -3,138 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HỆ THỐNG SIÊU THỊ MUA SẮM & DỊCH VỤ</title>
+    <title>HỆ THỐNG SIÊU THỊ - TỔNG HỢP</title>
     <style>
         :root {
             --main-color: #fb5531;
-            --bg-color: #f5f5f5;
-            --success-color: #2ecc71;
+            --success: #2ecc71;
         }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; color: #333; padding-bottom: 100px; }
-        header { background: linear-gradient(135deg, #fb5531, #ff8331); color: white; text-align: center; padding: 20px; font-size: 24px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; margin: 0; padding-bottom: 100px; }
+        header { background: linear-gradient(135deg, #fb5531, #ff8331); color: white; text-align: center; padding: 20px; font-size: 26px; font-weight: bold; }
         .container { max-width: 1200px; margin: auto; padding: 20px; }
-
-        .search-bar { width: 100%; max-width: 600px; margin: 15px auto; padding: 12px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 16px; }
-        .search-bar:focus { border-color: var(--main-color); }
-
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-
-        .shop-card, .product-card { /* giữ nguyên style cũ của bạn */ background: white; border-radius: 12px; padding: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
-        /* ... (bạn copy phần style cũ vào đây) ... */
-
-        /* Modal Quay thưởng */
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; }
-        .wheel-container { background: white; padding: 25px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .wheel { width: 300px; height: 300px; border-radius: 50%; background: conic-gradient(#ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ff4757); position: relative; margin: 20px auto; transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); }
-        .wheel::after { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 50px solid #fb5531; z-index: 10; }
+        .tabs { display: flex; background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; }
+        .tab.active { background: var(--main-color); color: white; }
         
-        .voucher-box { margin: 20px 0; padding: 15px; background: #f8f9fa; border: 2px dashed #fb5531; border-radius: 12px; font-size: 18px; }
+        .search-bar { width: 100%; padding: 14px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 16px; margin-bottom: 20px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); transition: 0.3s; }
+        .product-card:hover { transform: translateY(-5px); }
+        .image-box img { width: 100%; height: 180px; object-fit: cover; }
+        .info { padding: 12px; text-align: center; }
+        .product-name { font-size: 14px; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .price { color: #ee4d2d; font-weight: bold; font-size: 16px; }
+        
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; }
+        .shop-card { background: white; padding: 15px 10px; border-radius: 12px; text-align: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .shop-number { background: var(--main-color); color: white; width: 40px; height: 40px; line-height: 40px; border-radius: 50%; margin: 0 auto 8px; font-weight: bold; }
+
+        .cart-navbar {
+            position: fixed; bottom: 0; left: 0; right: 0; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; }
+        .wheel-container { background: white; padding: 25px; border-radius: 20px; text-align: center; max-width: 380px; }
+        .wheel { width: 280px; height: 280px; border-radius: 50%; background: conic-gradient(#ff4757, #ffa502, #2ed573, #1e90ff, #3742fa, #ff4757); margin: 20px auto; transition: transform 4s ease-out; position: relative; }
+        .wheel::after { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 40px solid #fb5531; }
+        .voucher-box { margin: 15px 0; padding: 15px; background: #f8f9fa; border: 2px dashed #fb5531; border-radius: 12px; }
     </style>
 </head>
 <body>
 <header>HỆ THỐNG SIÊU THỊ MUA SẮM & DỊCH VỤ</header>
-<div class="container" id="mainContent"></div>
-
-<div class="cart-navbar" id="summaryCartBar" style="display: none;">
-    <div class="cart-status">
-        Đã chọn: <span id="totalItems" style="font-weight:bold; color: var(--main-color);">0</span> mặt hàng |
-        Tổng: <span class="cart-total-price" id="totalPrice">0đ</span>
+<div class="container">
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab(0)">🏠 Các Shop</div>
+        <div class="tab" onclick="switchTab(1)">📦 Tổng Hợp Sản Phẩm</div>
     </div>
+
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Tìm kiếm sản phẩm..." onkeyup="filterProducts()">
+
+    <div id="shopView"></div>
+    <div id="totalView" style="display:none;"></div>
+</div>
+
+<div class="cart-navbar" id="summaryCartBar" style="display:none;">
+    <div>Đã chọn: <span id="totalItems" style="color:var(--main-color);font-weight:bold;">0</span> | Tổng: <span id="totalPrice" style="color:#ee4d2d;font-weight:bold;">0đ</span></div>
     <div>
-        <button onclick="showLuckyWheel()" style="margin-right:8px; background:#9b59b6; padding:10px 18px;">🎰 Quay Thưởng</button>
-        <button onclick="showSelectedInvoice()">Xem giỏ hàng</button>
+        <button onclick="showLuckyWheel()" style="background:#9b59b6;margin-right:8px;">🎰 Quay Thưởng</button>
+        <button onclick="showSelectedInvoice()">Xem Giỏ Hàng</button>
     </div>
 </div>
 
-<!-- Modal Quay số -->
+<!-- Modal Quay Thưởng -->
 <div id="luckymodal" class="modal">
     <div class="wheel-container">
-        <h2>🎉 QUAY SỐ NHẬN VOUCHER ĐẶC BIỆT 🎉</h2>
+        <h2>🎉 QUAY SỐ NHẬN VOUCHER 🎉</h2>
         <div id="wheel" class="wheel"></div>
-        <button onclick="spinWheel()" id="spinBtn" style="padding:14px 40px; font-size:18px; background:#fb5531; color:white; border:none; border-radius:50px; cursor:pointer; margin:10px;">QUAY NGAY!</button>
+        <button onclick="spinWheel()" id="spinBtn" style="padding:12px 40px; font-size:18px; background:#fb5531; color:white; border:none; border-radius:50px;">QUAY NGAY</button>
         <div id="result" class="voucher-box" style="display:none;"></div>
-        <button onclick="closeModal()" style="margin-top:10px;">Đóng</button>
+        <button onclick="closeModal()">Đóng</button>
     </div>
 </div>
 
 <script>
 // ==================== CẤU HÌNH ====================
-const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFCL1NiCeMNUGWbtkzgUgsQIdhjbASXoard37mTu0QQQFxUr1YjI7PSsMNdjDu2hRydSWbx-Ezaypa/pub?output=csv";
 const CORS_PROXY = "https://corsproxy.io/?";
+const MAIN_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFCL1NiCeMNUGWbtkzgUgsQIdhjbASXoard37mTu0QQQFxUr1YjI7PSsMNdjDu2hRydSWbx-Ezaypa/pub?output=csv";
 
-let SHOPS = [];
-let cartList = [];
-let currentProducts = [];
-
-// Danh sách Voucher & Khuyến mãi ngẫu nhiên
+// Danh sách Voucher
 const prizes = [
-    { text: "Voucher 100.000đ", value: 100000, code: "VOUCHER100K" },
-    { text: "Giảm 50% đơn hàng", value: "50%", code: "GIAM50" },
-    { text: "Miễn phí ship toàn quốc", value: 0, code: "FREESHIP" },
-    { text: "Giảm 30.000đ", value: 30000, code: "GIAM30K" },
-    { text: "Tặng 1 sản phẩm bất kỳ", value: "Tặng phẩm", code: "TANGSP" },
-    { text: "Voucher 200.000đ", value: 200000, code: "VOUCHER200K" },
-    { text: "Giảm 20% toàn shop", value: "20%", code: "GIAM20" },
-    { text: "May mắn lần sau 👀", value: 0, code: "TRYAGAIN" }
+    {text:"Voucher 100k", code:"VOUCHER100K"}, {text:"Giảm 50%", code:"GIAM50"}, 
+    {text:"Miễn phí ship", code:"FREESHIP"}, {text:"Giảm 30k", code:"GIAM30K"},
+    {text:"Voucher 200k", code:"VOUCHER200K"}, {text:"Tặng quà", code:"TANGQUA"}
 ];
 
-function getRandomPrize() {
-    // Tăng xác suất giải nhỏ
-    const rand = Math.random();
-    if (rand < 0.15) return prizes[5];      // Voucher 200k
-    if (rand < 0.35) return prizes[0];      // Voucher 100k
-    if (rand < 0.55) return prizes[2];      // Freeship
-    return prizes[Math.floor(Math.random() * prizes.length)];
+let SHOPS = [], allProducts = [], cartList = [], currentTab = 0;
+
+// ==================== TẢI DỮ LIỆU ====================
+async function loadData() {
+    try {
+        const url = CORS_PROXY + encodeURIComponent(MAIN_CSV);
+        const res = await fetch(url);
+        const text = await res.text();
+        const rows = text.split(/\r?\n/);
+
+        // Tải danh sách Shop (các sheet con)
+        SHOPS = [];
+        for (let i = 1; i < rows.length; i++) {
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (cols[0]) SHOPS.push({n: cols[0].replace(/"/g,'').trim(), g: cols[1]?.replace(/"/g,'').trim() || "0"});
+        }
+        renderShops();
+    } catch(e) { console.error(e); }
 }
 
-// ==================== Các hàm cũ (loadShops, renderShopProducts, filterProducts...) ====================
-// ... Giữ nguyên như code trước đó ...
+// ==================== RENDER CÁC SHOP ====================
+function renderShops() {
+    let html = `<div class="shop-grid">`;
+    SHOPS.forEach((shop, i) => {
+        html += `<div class="shop-card" onclick="openShop(${i})"><div class="shop-number">${i+1}</div><div>${shop.n}</div></div>`;
+    });
+    html += `</div>`;
+    document.getElementById("shopView").innerHTML = html;
+}
+
+async function openShop(index) {
+    // Có thể mở chi tiết shop như cũ nếu cần
+    alert(`Đang mở shop: ${SHOPS[index].n} (Chức năng chi tiết đang được mở rộng)`);
+}
+
+// ==================== TẢI & RENDER TỔNG HỢP ====================
+async function loadTotalProducts() {
+    try {
+        const url = CORS_PROXY + encodeURIComponent(MAIN_CSV + "&gid=0");
+        const res = await fetch(url);
+        const text = await res.text();
+        const rows = text.split(/\r?\n/).slice(2); // Bỏ 2 dòng header
+
+        allProducts = [];
+        let html = `<h2 style="text-align:center;color:#333;">📦 DANH SÁCH TỔNG HỢP SẢN PHẨM</h2><div class="products-grid" id="totalGrid">`;
+
+        rows.forEach(row => {
+            if (!row.trim()) return;
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (cols.length < 5 || cols[4]?.replace(/"/g,'').trim() !== "1") return;
+
+            const name = cols[0]?.replace(/"/g,'').trim();
+            const img = cols[1]?.replace(/"/g,'').trim();
+            const price = cols[2]?.replace(/"/g,'').trim();
+            const link = cols[3]?.replace(/"/g,'').trim();
+
+            if (name) {
+                allProducts.push({name, price, img, link});
+                html += `
+                <div class="product-card">
+                    <div class="image-box"><img src="${img}" onerror="this.src='https://via.placeholder.com/200x180?text=No+Image'"></div>
+                    <div class="info">
+                        <div class="product-name">${name}</div>
+                        <div class="price">${price}</div>
+                        <a href="${link}" target="_blank" style="background:var(--main-color);color:white;padding:8px;display:block;margin-top:8px;text-decoration:none;border-radius:8px;">Mua ngay</a>
+                    </div>
+                </div>`;
+            }
+        });
+        html += `</div>`;
+        document.getElementById("totalView").innerHTML = html;
+    } catch(e) { console.error(e); }
+}
+
+// ==================== TÌM KIẾM ====================
+function filterProducts() {
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        const name = card.querySelector('.product-name').textContent.toLowerCase();
+        card.style.display = name.includes(keyword) ? '' : 'none';
+    });
+}
 
 // ==================== VÒNG QUAY MAY MẮN ====================
 function showLuckyWheel() {
     document.getElementById("luckymodal").style.display = "flex";
     document.getElementById("result").style.display = "none";
-    document.getElementById("spinBtn").disabled = false;
 }
 
 function closeModal() {
     document.getElementById("luckymodal").style.display = "none";
 }
 
-let isSpinning = false;
 function spinWheel() {
-    if (isSpinning) return;
-    isSpinning = true;
-    document.getElementById("spinBtn").disabled = true;
-
     const wheel = document.getElementById("wheel");
-    const randomSpin = 2000 + Math.floor(Math.random() * 2000);
-    wheel.style.transform = `rotate(${randomSpin}deg)`;
+    const btn = document.getElementById("spinBtn");
+    btn.disabled = true;
+
+    const deg = 2000 + Math.random() * 2000;
+    wheel.style.transform = `rotate(${deg}deg)`;
 
     setTimeout(() => {
-        const prize = getRandomPrize();
-        const resultDiv = document.getElementById("result");
-        
-        resultDiv.innerHTML = `
-            <strong style="color:#e74c3c;">🎁 ${prize.text}</strong><br>
-            <small>Mã voucher: <b>${prize.code}</b></small><br>
-            <button onclick="copyVoucher('${prize.code}')" style="margin-top:8px; padding:6px 16px; background:#2ecc71; color:white; border:none; border-radius:6px;">📋 Sao chép mã</button>
+        const prize = prizes[Math.floor(Math.random() * prizes.length)];
+        document.getElementById("result").innerHTML = `
+            <strong>🎁 ${prize.text}</strong><br>
+            Mã: <b>${prize.code}</b><br>
+            <button onclick="copyToClipboard('${prize.code}')" style="margin-top:10px;padding:8px 16px;background:#2ecc71;color:white;border:none;border-radius:6px;">📋 Sao chép mã</button>
         `;
-        resultDiv.style.display = "block";
-        isSpinning = false;
-    }, 4200);
+        document.getElementById("result").style.display = "block";
+        btn.disabled = false;
+    }, 4500);
 }
 
-function copyVoucher(code) {
-    navigator.clipboard.writeText(code).then(() => {
-        alert("✅ Đã sao chép mã voucher: " + code);
-    });
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    alert("✅ Đã sao chép: " + text);
+}
+
+// ==================== CHUYỂN TAB ====================
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===tab));
+    
+    document.getElementById("shopView").style.display = tab === 0 ? "block" : "none";
+    document.getElementById("totalView").style.display = tab === 1 ? "block" : "none";
 }
 
 // ==================== KHỞI ĐỘNG ====================
 async function init() {
-    // ... load shops và render như code cũ ...
+    await loadData();
+    await loadTotalProducts();
+    switchTab(0);
 }
 init();
 </script>
