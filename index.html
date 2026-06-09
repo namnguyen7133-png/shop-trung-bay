@@ -30,7 +30,7 @@
         }
        
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: auto;
             padding: 20px;
         }
@@ -126,10 +126,10 @@
         .product-name {
             font-size: 13.5px;
             font-weight: 500;
-            height: 38px;
+            height: 42px;
             overflow: hidden;
             margin-bottom: 8px;
-            line-height: 19px;
+            line-height: 1.3;
             color: #333;
         }
        
@@ -211,33 +211,10 @@
             z-index: 1000;
         }
        
-        .cart-status {
-            font-size: 16px;
-            font-weight: 500;
-        }
-       
-        .cart-total-price {
-            color: #ee4d2d;
-            font-size: 22px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-       
-        .btn-checkout {
-            background: #ee4d2d;
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            font-weight: bold;
-            border-radius: 22px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-       
         .loading {
             text-align: center;
-            padding: 50px;
-            font-weight: 500;
+            padding: 80px 20px;
+            font-size: 18px;
             color: #666;
         }
     </style>
@@ -256,26 +233,11 @@
 
 <script>
 // ==================== CẤU HÌNH ====================
-const SPREADSHEET_ID = "1_Xwvp767BMtRnqA-9lF3ROOSbBIBk1k_QwvE2CT-h5s";
+const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFCL1NiCeMNUGWbtkzgUgsQIdhjbASXoard37mTu0QQQFxUr1YjI7PSsMNdjDu2hRydSWbx-Ezaypa/pub?output=csv";
 
-// Sử dụng CORS Proxy đáng tin cậy hơn
 const CORS_PROXY = "https://corsproxy.io/?";
 
-const SHOPS = [
-    {n: "Ngân An", g: "0"}, {n: "Minh Châu", g: "2042428163"}, {n: "Bích Ngọc", g: "2009289883"},
-    {n: "Gia Bách", g: "793885535"}, {n: "Ngô Gialinh", g: "2040744619"}, {n: "Minh Phương", g: "1363743009"},
-    {n: "Anh Dũng", g: "87027625"}, {n: "Hải Vinh", g: "1113281647"}, {n: "Bạch Anh", g: "71371535"},
-    {n: "Kim Huệ", g: "1965546264"}, {n: "Tuấn Anh", g: "1073997052"}, {n: "Thế Anh", g: "849927033"},
-    {n: "Thị Mai", g: "298899208"}, {n: "Việt Hưng", g: "756110609"}, {n: "Thị Hồng", g: "879903903"},
-    {n: "Văn Hiệp", g: "1122882591"}, {n: "Thị Chi", g: "232472008"}, {n: "Tấn Bắc", g: "632628873"},
-    {n: "Thị Tâm", g: "1889905962"}, {n: "Văn Giữ", g: "731061721"}, {n: "Thị Bình", g: "1643784423"},
-    {n: "Bích Nguyệt", g: "332503970"}, {n: "Văn Tuấn", g: "1594362635"}, {n: "Yến Nhi", g: "1770126917"},
-    {n: "Thị Phương", g: "1795348787"}, {n: "Hoài Nam", g: "1468986790"}, {n: "Khắc Năng", g: "801738430"},
-    {n: "Thị Hà", g: "673532367"}, {n: "Minh Nam", g: "1798395208"}, {n: "Kim Anh", g: "2038870297"},
-    {n: "Minh Hằng", g: "1796982267"}, {n: "Quý Cường", g: "1593249867"},
-    {n: "DỊCH VỤ VỆ SINH", g: "518971287"}
-];
-
+let SHOPS = [];
 let cartList = [];
 
 // ==================== HÀM HỖ TRỢ ====================
@@ -303,10 +265,37 @@ function formatCurrencyVN(number) {
     return number.toLocaleString('vi-VN') + 'đ';
 }
 
-// ==================== LẤY DỮ LIỆU TỪ GOOGLE SHEETS ====================
+// ==================== TẢI DANH SÁCH SHOP TỪ CSV ====================
+async function loadShops() {
+    try {
+        const fetchUrl = CORS_PROXY + encodeURIComponent(PUBLISHED_CSV_URL);
+        const response = await fetch(fetchUrl);
+        const csvText = await response.text();
+        const rows = csvText.split(/\r?\n/);
+
+        SHOPS = [];
+        // Bắt đầu từ dòng 2 (dòng 1 là header)
+        for (let i = 1; i < rows.length; i++) {
+            if (!rows[i].trim()) continue;
+            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            const shopName = cols[0]?.replace(/"/g, "").trim();
+            const gid = cols[1]?.replace(/"/g, "").trim();   // Giả sử cột B là GID
+
+            if (shopName) {
+                SHOPS.push({ n: shopName, g: gid || "0" });
+            }
+        }
+        return SHOPS.length > 0;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+// ==================== HIỂN THỊ SẢN PHẨM ====================
 async function renderShopProducts(shopIndex) {
     const mainView = document.getElementById("mainContent");
-    mainView.innerHTML = '<div class="loading">Đang tải dữ liệu cửa hàng...</div>';
+    mainView.innerHTML = '<div class="loading">Đang tải sản phẩm...</div>';
     document.getElementById("summaryCartBar").style.display = "none";
     cartList = [];
 
@@ -315,19 +304,12 @@ async function renderShopProducts(shopIndex) {
     if (!currentShop) return;
 
     try {
-        const baseUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${currentShop.g}`;
-        const fetchUrl = CORS_PROXY + encodeURIComponent(baseUrl);
+        const shopUrl = `${PUBLISHED_CSV_URL}&gid=${currentShop.g}`;
+        const fetchUrl = CORS_PROXY + encodeURIComponent(shopUrl);
 
         const response = await fetch(fetchUrl);
-        if (!response.ok) throw new Error("Không thể kết nối");
-
         const csvData = await response.text();
         const dataRows = csvData.split(/\r?\n/);
-
-        if (dataRows.length <= 1) {
-            mainView.innerHTML = `<div style="text-align:center;padding:50px;">Cửa hàng tạm thời chưa có sản phẩm.</div>`;
-            return;
-        }
 
         let htmlGrid = `
             <div class="btn-back" onclick="location.href='?'">⬅ Quay lại trang chủ</div>
@@ -337,23 +319,23 @@ async function renderShopProducts(shopIndex) {
         let validProductCount = 0;
 
         for (let i = 1; i < dataRows.length; i++) {
-            let rowText = dataRows[i].trim();
+            const rowText = dataRows[i].trim();
             if (!rowText) continue;
 
             const columns = rowText.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             
-            const productName = columns[3]?.replace(/"/g, "").trim();
-            const productPriceText = columns[2]?.replace(/"/g, "").trim();
-            let imageUrl = columns[10]?.replace(/"/g, "").trim() || "";
-            const linkUuDai = columns[8]?.replace(/"/g, "").trim() || "#";
-            const stockStatus = columns[4]?.replace(/"/g, "").trim();
+            const productName      = columns[3]?.replace(/"/g, "").trim() || "";
+            const productPriceText = columns[2]?.replace(/"/g, "").trim() || "";
+            let imageUrl           = columns[10]?.replace(/"/g, "").trim() || "";
+            const linkUuDai        = columns[8]?.replace(/"/g, "").trim() || "#";
+            const stockStatus      = columns[4]?.replace(/"/g, "").trim() || "";
 
-            if (productName && (stockStatus === "Còn" || stockStatus === "1")) {
+            if (productName && (stockStatus === "Còn" || stockStatus === "1" || stockStatus.toLowerCase() === "còn")) {
                 const buttonConfig = generateButtonStyle(linkUuDai);
                 const numericPrice = parseCurrencyToNumber(productPriceText);
 
                 if (imageUrl.includes('youtu')) {
-                    imageUrl = `https://img.youtube.com/vi/${imageUrl.split('/').pop()}/0.jpg`;
+                    imageUrl = `https://img.youtube.com/vi/${imageUrl.split('/').pop().split('?')[0]}/0.jpg`;
                 }
 
                 htmlGrid += `
@@ -364,7 +346,7 @@ async function renderShopProducts(shopIndex) {
                     </div>
                     <div class="info-box">
                         <div class="product-name" title="${productName}">${productName}</div>
-                        <div class="product-price">${productPriceText}</div>
+                        <div class="product-price">${productPriceText || "Liên hệ"}</div>
                         <div class="action-buttons">
                             <a class="btn-link" target="_blank" href="${linkUuDai}" style="background:${buttonConfig.color}">${buttonConfig.text}</a>
                             <button class="btn-select" onclick="document.querySelector('#prod-card-${validProductCount} .select-checkbox').click()">Chọn mua</button>
@@ -376,7 +358,10 @@ async function renderShopProducts(shopIndex) {
         }
 
         if (validProductCount === 0) {
-            htmlGrid += `<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Hiện tại toàn bộ mặt hàng đã hết.</div>`;
+            htmlGrid += `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #666;">
+                Hiện tại toàn bộ mặt hàng trong shop này đã hết.<br>
+                <small>Vui lòng kiểm tra lại cột "Tình trạng" trong Google Sheet (phải ghi "Còn" hoặc "1")</small>
+            </div>`;
         } else {
             document.getElementById("summaryCartBar").style.display = "flex";
             refreshCartUI();
@@ -386,19 +371,11 @@ async function renderShopProducts(shopIndex) {
 
     } catch (error) {
         console.error(error);
-        mainView.innerHTML = `
-            <div style="text-align:center;padding:50px;color:red;">
-                <h3>❌ Không thể tải dữ liệu</h3>
-                <p>Vui lòng kiểm tra:</p>
-                <ul style="text-align:left;display:inline-block;">
-                    <li>Google Sheet đã được đặt **Công khai** (Anyone with the link)</li>
-                    <li>ID Sheet và GID có đúng không</li>
-                </ul>
-            </div>`;
+        mainView.innerHTML = `<div style="text-align:center;padding:60px;color:red;">Lỗi tải dữ liệu. Vui lòng thử lại sau.</div>`;
     }
 }
 
-// Các hàm còn lại giữ nguyên
+// Các hàm cũ giữ nguyên
 function onSelectProductChange(id, name, price, element) {
     const targetCard = document.getElementById(`prod-card-${id}`);
     if (element.checked) {
@@ -424,29 +401,39 @@ function showSelectedInvoice() {
     }
     let invoiceText = "HÓA ĐƠN TỔM HỢP SẢN PHẨM ĐÃ CHỌN:\n\n";
     cartList.forEach((item, index) => {
-        invoiceText += `${index + 1}. ${item.name} -> [${formatCurrencyVN(item.price)}]\n`;
+        invoiceText += `${index + 1}. ${item.name} → ${formatCurrencyVN(item.price)}\n`;
     });
-    const totalAmount = cartList.reduce((acc, item) => acc + item.price, 0);
-    invoiceText += `\n-----------------------------------\nTỔNG CỘNG THANH TOÁN: ${formatCurrencyVN(totalAmount)}`;
+    const total = cartList.reduce((acc, item) => acc + item.price, 0);
+    invoiceText += `\n-----------------------------------\nTỔNG CỘNG: ${formatCurrencyVN(total)}`;
     alert(invoiceText);
 }
 
-// Routing
-const urlParams = new URLSearchParams(window.location.search);
-const currentShopId = urlParams.get('id');
+// ==================== KHỞI ĐỘNG ====================
+async function init() {
+    const success = await loadShops();
+    if (!success) {
+        document.getElementById("mainContent").innerHTML = `<div style="text-align:center;padding:80px;color:red;">Không tải được danh sách cửa hàng.</div>`;
+        return;
+    }
 
-if (currentShopId) {
-    renderShopProducts(currentShopId);
-} else {
-    let gridLayout = '<div class="shop-grid">';
-    SHOPS.forEach((shop, i) => {
-        gridLayout += `
-        <div class="shop-card" onclick="location.href='?id=${i+1}'">
-            <div class="shop-number">${i+1}</div>
-        </div>`;
-    });
-    document.getElementById("mainContent").innerHTML = gridLayout + '</div>';
+    const urlParams = new URLSearchParams(window.location.search);
+    const shopId = urlParams.get('id');
+
+    if (shopId) {
+        renderShopProducts(shopId);
+    } else {
+        let grid = '<div class="shop-grid">';
+        SHOPS.forEach((shop, i) => {
+            grid += `
+            <div class="shop-card" onclick="location.href='?id=${i+1}'">
+                <div class="shop-number">${i+1}</div>
+            </div>`;
+        });
+        document.getElementById("mainContent").innerHTML = grid + '</div>';
+    }
 }
+
+init();
 </script>
 </body>
 </html>
